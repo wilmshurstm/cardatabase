@@ -26,7 +26,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        // The next line opens up the backend end points to all users
+        http.csrf().disable().cors().and().authorizeRequests().anyRequest().permitAll();
+
+        /* Temp comment out section
+        // This next section will secure the endpoints to Login using JWT and Fetch
         http.csrf().disable().cors().and().authorizeRequests()
+
                 .antMatchers(HttpMethod.POST, "/login").permitAll()
                 .anyRequest().authenticated()
                 .and()
@@ -36,6 +42,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // Filter for other requests to check JWT in header
                 .addFilterBefore(new AuthenticationFilter(),
                         UsernamePasswordAuthenticationFilter.class);
+        */
     }
 
     @Bean
