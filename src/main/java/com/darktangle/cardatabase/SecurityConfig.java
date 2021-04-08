@@ -1,6 +1,9 @@
 package com.darktangle.cardatabase;
+
 import java.util.Arrays;
 
+import com.darktangle.cardatabase.AuthenticationFilter;
+import com.darktangle.cardatabase.LoginFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,7 +19,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.darktangle.cardatabase.service.UserDetailServiceImpl;
-import com.darktangle.cardatabase.service.AuthenticationService;
 
 @Configuration
 @EnableWebSecurity
@@ -26,13 +28,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        // The next line opens up the backend end points to all users
-        // http.csrf().disable().cors().and().authorizeRequests().anyRequest().permitAll();
-
-        ///* Temp comment out section
-        // This next section will secure the endpoints to Login using JWT and Fetch
         http.csrf().disable().cors().and().authorizeRequests()
-
                 .antMatchers(HttpMethod.POST, "/login").permitAll()
                 .anyRequest().authenticated()
                 .and()
@@ -42,14 +38,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // Filter for other requests to check JWT in header
                 .addFilterBefore(new AuthenticationFilter(),
                         UsernamePasswordAuthenticationFilter.class);
-        //*/
     }
 
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigin(Arrays.asList("*"));
+        config.setAllowedOrigins(Arrays.asList("*"));
         config.setAllowedMethods(Arrays.asList("*"));
         config.setAllowedHeaders(Arrays.asList("*"));
         config.setAllowCredentials(true);
